@@ -1,1 +1,1 @@
-# mecab_dict_fix
+# tdmelodic_userdict
