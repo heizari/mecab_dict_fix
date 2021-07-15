@@ -1,5 +1,15 @@
 # tdmelodic_userdict
-
+### preprocess
+If you prepare tdmelodic, please refer [tdmelodic](https://github.com/PKSHATechnology-Research/tdmelodic)
+```
+vi `mecab-config --dicdir`/tdmelodic/dicrc
+```
+add these
+```
+node-format-yomi = %m\t%f[1]\t%f[11]\t%f[17]\t%c\t%phl\n
+unk-format-yomi  = %m\t?\t?\t?\t1\t1\n
+eos-format-yomi  = EOS\tEOS\t\t
+```
 example  
 ```
 ./tdmelodic_userdict.sh --textfile /path/to/textfile --tdmelodic-dir /path/to/tdmelodic 
