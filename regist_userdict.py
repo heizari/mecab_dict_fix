@@ -105,8 +105,8 @@ def create_regist_info(word_info):
     ]
 
 def fix_dict(texts, filepath, startindex):
-    mecab_yomi = MeCab.Tagger('-O yomi -r /dev/null -d /usr/lib/x86_64-linux-gnu/mecab/dic/tdmelodic/ -u /usr/lib/x86_64-linux-gnu/mecab/dic/userdic/add_dict.dic')
-    mecab_wakati = MeCab.Tagger('-O wakati -r /dev/null -d /usr/lib/x86_64-linux-gnu/mecab/dic/tdmelodic/ -u /usr/lib/x86_64-linux-gnu/mecab/dic/userdic/add.dic')
+    mecab_yomi = MeCab.Tagger('-O yomi -r /dev/null -d /usr/lib/x86_64-linux-gnu/mecab/dic/tdmelodic/')
+    mecab_wakati = MeCab.Tagger('-O wakati -r /dev/null -d /usr/lib/x86_64-linux-gnu/mecab/dic/tdmelodic/')
     is_prev = False
     word_info_list_prev = []
     yomis_prev = ''
