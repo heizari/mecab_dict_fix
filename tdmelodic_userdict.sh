@@ -73,8 +73,9 @@ if [ "${stage}" -le 2 ] && [ "${stop_stage}" -ge 2 ]; then
     echo "stage 2 regist user dictionary to ${userdic}"
 
     if [ ! -d ${mecab}/${userdic} ]; then
-        sudo mkdir ${mecab}/${userdic}
         echo "make dir ${mecab}/${userdic}"
+        sudo mkdir ${mecab}/${userdic}
+        
     fi
     sudo /usr/lib/mecab/mecab-dict-index \
         -d ${mecab}/tdmelodic/ \
