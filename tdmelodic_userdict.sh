@@ -14,13 +14,14 @@ tdmelodic_dir=`pwd`/tdmelodic
 while true; do
     [ -z "${1:-}" ] && break;
     case "$1" in
-    -h) echo "--filepath: Using all stages. Specify 'userdict'.csv path. If you update userdict, recommend to specify existing csv file\
-              --startindex: Using stage 0.Specify start row in textfile\
-              --endindex: Using stage 0. Specify end row in textfile\
-              --text: Input a sentence. It can not used at the same time as --textfile\
-              --textfile: Input textfile. It can not used at the same time as --text\
-              --tdmelodic-dir: Specify tdmelodic directory if tdmelodic directory is not in this directory\
-              --stage, --stop-stage: Specify start and stop stage"
+    -h) echo "
+            --filepath: Using all stages. Specify 'userdict'.csv path. If you update userdict, recommend to specify existing csv file
+            --startindex: Using stage 0.Specify start row in textfile
+            --endindex: Using stage 0. Specify end row in textfile
+            --text: Input a sentence. It can not used at the same time as --textfile
+            --textfile: Input textfile. It can not used at the same time as --text
+            --tdmelodic-dir: Specify tdmelodic directory if tdmelodic directory is not in this directory
+            --stage, --stop-stage: Specify start and stop stage"
         exit 1 ;;
     --*=*) echo "$0: options to scripts must be of the form --name value. need not '='"
         exit 1 ;;
@@ -84,6 +85,6 @@ if [ "${stage}" -le 2 ] && [ "${stop_stage}" -ge 2 ]; then
         -f  utf-8 -t utf-8 "${dirname}/${filename}_tdmelodic.csv"
 
     if ! grep -q "${mecab}"/"${userdic}"/"${filename}".dic "${mecab}"/tdmelodic/dicrc; then
-        echo you shold add \'"${mecab}"/"${userdic}"/"${filename}.dic"\' in "${mecab}/tdmelodic/dicrc"
+        echo you shold add \'userdic="${mecab}"/"${userdic}"/"${filename}.dic"\' in "${mecab}/tdmelodic/dicrc"
     fi
 fi
