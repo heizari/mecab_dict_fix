@@ -76,18 +76,14 @@ if [ "${stage}" -le 2 ] && [ "${stop_stage}" -ge 2 ]; then
     if [ ! -d ${mecab}/${userdic} ]; then
         echo "make dir ${mecab}/${userdic}"
         sudo mkdir ${mecab}/${userdic}
-        
+
     fi
     sudo /usr/lib/mecab/mecab-dict-index \
         -d ${mecab}/tdmelodic/ \
         -u "${mecab}/${userdic}/${filename}.dic" \
         -f  utf-8 -t utf-8 "${dirname}/${filename}_tdmelodic.csv"
-<<<<<<< Updated upstream
-fi
-=======
 
     if ! grep -q "${mecab}"/"${userdic}"/"${filename}".dic "${mecab}"/tdmelodic/dicrc; then
         echo you shold add \'"${mecab}"/"${userdic}"/"${filename}.dic"\' in "${mecab}/tdmelodic/dicrc"
     fi
 fi
->>>>>>> Stashed changes
