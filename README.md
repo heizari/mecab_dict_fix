@@ -12,10 +12,10 @@ example
 4. Check regist yomi type at 3. If you verify this, type 'y'
 
 * type enter
-    - show next sentence when it is 1.
-    - return 1. when it is 2 or 3.
-    - return 3. when it is 4
+    - show next sentence when status is 1.
+    - return 1. when status is 2 or 3.
+    - return 3. when status is 4
 
-* another typing on 1.
+* another typing on status 1.
     - prev: show previous sentence and can regist new yomi.
     - drop (num): drop registed yomi. num is regist yomi's index. If you do not input num, drop latest regist yomi.
