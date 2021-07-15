@@ -35,7 +35,7 @@ def select_word_id(num, l):
     if num == '':
         return
     try:
-        nums = [int(n) for n in num.split(' ')]
+        nums = [int(n) for n in num.split()]
         if not all([n < l for n in nums]):
             print(f'input out of index({l})')
             nums = select_word_id(input_to_han('index:'), l)
@@ -117,7 +117,7 @@ def fix_dict(texts, filepath, startindex):
         words = words.split("\n")[:-1]
         yomis = ''
         wakati = mecab_wakati.parse(text)
-        sp_words = wakati.split(' ')
+        sp_words = wakati.split()
         yomi_list = []
         word_info_list = []
 
