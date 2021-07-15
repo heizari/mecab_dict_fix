@@ -3,10 +3,7 @@ import os
 import argparse
 import csv
 import numpy as np
-from operator import itemgetter
-import pandas as pd
 import pdb
-import itertools
 import kanjize
 import mojimoji
 import re
