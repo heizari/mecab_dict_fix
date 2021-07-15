@@ -21,10 +21,11 @@ while true; do
               --textfile: Input textfile. It can not used at the same time as --text\
               --tdmelodic-dir: Specify tdmelodic directory if tdmelodic directory is not in this directory\
               --stage, --stop-stage: Specify start and stop stage"
+        exit 1 ;;
     --*=*) echo "$0: options to scripts must be of the form --name value. need not '='"
         exit 1 ;;
     --*) name=`echo "$1" | sed s/^--// | sed s/-/_/g`;
-        eval '[ -z "${'$name'+xxx}" ]' && echo '$0; invalid option $1' 1>&2 && exit 1;
+        eval '[ -z "${'$name'+xxx}" ]' && echo "$0; invalid option $1" 1>&2 && exit 1;
         eval $name=\"$2\";
         shift 2;
     esac
@@ -81,4 +82,12 @@ if [ "${stage}" -le 2 ] && [ "${stop_stage}" -ge 2 ]; then
         -d ${mecab}/tdmelodic/ \
         -u "${mecab}/${userdic}/${filename}.dic" \
         -f  utf-8 -t utf-8 "${dirname}/${filename}_tdmelodic.csv"
+<<<<<<< Updated upstream
 fi
+=======
+
+    if ! grep -q "${mecab}"/"${userdic}"/"${filename}".dic "${mecab}"/tdmelodic/dicrc; then
+        echo you shold add \'"${mecab}"/"${userdic}"/"${filename}.dic"\' in "${mecab}/tdmelodic/dicrc"
+    fi
+fi
+>>>>>>> Stashed changes
