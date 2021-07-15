@@ -7,7 +7,7 @@ vi `mecab-config --dicdir`/tdmelodic/dicrc
 add these
 ```
 node-format-yomi = %m\t%f[1]\t%f[11]\t%f[17]\t%c\t%phl\n
-unk-format-yomi  = %m\t?\t?\t?\t1\t1\n
+unk-format-yomi  = %m\t?\t?\t?\t2\t1\n
 eos-format-yomi  = EOS\tEOS\t\t
 ```
 example  
