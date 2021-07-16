@@ -1,6 +1,6 @@
 # tdmelodic_userdict
 ### preprocess
-If you can not use tdmelodic, please refer [tdmelodic](https://github.com/PKSHATechnology-Research/tdmelodic)
+※If you can not use tdmelodic, please refer [tdmelodic](https://github.com/PKSHATechnology-Research/tdmelodic)
 ```
 vi `mecab-config --dicdir`/tdmelodic/dicrc
 ```
@@ -28,4 +28,4 @@ example
 
 * another typing on status 1.
     - prev: show previous sentence and can regist new yomi.
-    - drop (num): drop registed yomi. num is regist yomi's index. If you do not input num, drop latest regist yomi.
+    - drop (num): drop registed yomi. num is registed yomi's index. If you do not input num, drop latest registed yomi.
