@@ -69,6 +69,9 @@ def drop_word(drop_args):
     if len(drop_args) == 1:
         drop_idx = -1
     else:
+        if abs(drop_idx) > len(fixed_list):
+            print(f'out of range ({len(fixed_list)})')
+            return
         drop_idx = drop_args[-1]
 
     do_drop = True if 'y' in input_to_han(f'{fixed_list[drop_idx]}\ndrop this?:') else False
