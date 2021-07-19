@@ -10,18 +10,25 @@ stop_stage=100
 textfile=''
 text=''
 tdmelodic_dir=`pwd`/tdmelodic
+container=tdmelodic_userdict
+
+function remove_container {
+    docker stop "$container"
+}
 
 while true; do
     [ -z "${1:-}" ] && break;
     case "$1" in
     -h) echo "
-            --filepath: Using all stages. Specify 'userdict'.csv path. If you update userdict, recommend to specify existing csv file
-            --startindex: Using stage 0.Specify start row in textfile
-            --endindex: Using stage 0. Specify end row in textfile
-            --text: Input a sentence. It can not used at the same time as --textfile
-            --textfile: Input textfile. It can not used at the same time as --text
-            --tdmelodic-dir: Specify tdmelodic directory if tdmelodic directory is not in this directory
-            --stage, --stop-stage: Specify start and stop stage"
+            --filepath: For all stages. Specify 'userdict'.csv path. If you update userdict, recommend to specify existing csv file.
+            --startindex: For stage 0.Specify start row in textfile.
+            --endindex: For stage 0. Specify end row in textfile.
+            --text: For stage 1. Input a sentence. It can not used at the same time as --textfile.
+            --textfile: For stage 1. Input textfile. It can not used at the same time as --text.
+            --tdmelodic-dir: For stage 1. Specify tdmelodic directory if tdmelodic directory doesn't exist this directory.
+            --container: For Stage 1. Specify container name.
+            --stage, --stop-stage: Specify start and stop stage.
+            "
         exit 1 ;;
     --*=*) echo "$0: options to scripts must be of the form --name value. need not '='"
         exit 1 ;;
@@ -59,16 +66,27 @@ fi
 
 if [ "${stage}" -le 1 ] && [ "${stop_stage}" -ge 1 ]; then
     echo 'stage 1 inference accents'
+    if [ ! -e "${dirname}/${filename}".csv ]; then
+        echo No such a csv file: \'"${filepath}"\'
+        exit
+    fi
+
+    if echo `docker ps -a` | grep -q "${container}"; then
+        echo "\'${container}\' is already exists. Remove exists container or change container name using args --container."
+        exit 1
+    fi
+
     docker run -it --rm -d -v "${tdmelodic_dir}":/root/workspace/tdmelodic \
-        -v "${dirname}":/root/output --name tdm tdmelodic:latest
-    docker exec tdm python3 /root/workspace/tdmelodic/script/neologd_patch.py \
+        -v "${dirname}":/root/output --name "${container}" tdmelodic:latest
+    trap remove_container EXIT
+
+    docker exec "${container}" python3 /root/workspace/tdmelodic/script/neologd_patch.py \
         --input /root/output/${filename}.csv \
         --output /root/output/${filename}_mod.csv
-    docker exec tdm python3 /root/workspace/tdmelodic/nn/convert_dic.py \
+    docker exec "${container}" python3 /root/workspace/tdmelodic/nn/convert_dic.py \
         --input /root/output/${filename}_mod.csv \
         --output /root/output/${filename}_tdmelodic.csv
-    sudo rm "${filename}"_mod.csv
-    docker stop tdm
+    sudo rm "${dirname}/${filename}"_mod.csv
 fi
 
 if [ "${stage}" -le 2 ] && [ "${stop_stage}" -ge 2 ]; then
