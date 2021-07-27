@@ -1,5 +1,5 @@
 # tdmelodic_userdict
-### preprocess
+### preparation
 ※If you can not use tdmelodic, please refer [tdmelodic](https://github.com/PKSHATechnology-Research/tdmelodic)
 ```
 vi `mecab-config --dicdir`/tdmelodic/dicrc
