@@ -15,10 +15,10 @@ current_idx = 0
 fixed_list = []
 word_type_stdout = 'which hinshi?\n1:名詞, 2:人名 3:地名, 4:動詞'
 word_type_list = [
-    ['名詞','固有名詞','一般',4786],
-    ['名詞','固有名詞','人名',4788],
-    ['名詞','固有名詞','地名',4792],
-    ['動詞']
+    [['名詞','固有名詞','一般','*','*','*'],4786],
+    [['名詞','固有名詞','人名','*','*','*'],4788],
+    [['名詞','固有名詞','地名','*','*','*'],4792],
+    [['動詞'],0]
 ]
 matrix = pd.read_csv('./matrix.csv', names=['prev','target','cost'])
 
@@ -34,7 +34,7 @@ def select_word_types(idx):
     if idx > len(word_type_list):
         print('this number cant\'t using')
         select_word_types(input_to_han(word_type_stdout))
-    elif (word_type_list[idx][0] == '動詞'):
+    elif (word_type_list[idx][0][0] == '動詞'):
         print('create doushi')
     else:
         return word_type_list[idx]
@@ -106,19 +106,19 @@ def drop_word(drop_args):
         fixed_list.pop(drop_idx)
     return
 
-def create_regist_info(word_info):
-    word, yomi_in, cost, c_type, c_form, l_form, context_id= word_info
+def create_regist_info(word_info, w_types):
+    yomi_in, word, cost, context_id = word_info
     return [
         word,
         context_id,
         context_id,
         cost,
-        c_type,
-        c_form,
-        l_form,
-        '*',
-        '*',
-        '*',
+        w_types[0],
+        w_types[1],
+        w_types[2],
+        w_types[3],
+        w_types[4],
+        w_types[5],
         yomi_in,
         word,
         word,
@@ -136,6 +136,7 @@ def create_regist_info(word_info):
 def fix_dict(texts, filepath, startindex):
     mecab_yomi = MeCab.Tagger('-O yomi -r /dev/null -d /usr/lib/x86_64-linux-gnu/mecab/dic/tdmelodic/')
     mecab_wakati = MeCab.Tagger('-O wakati -r /dev/null -d /usr/lib/x86_64-linux-gnu/mecab/dic/tdmelodic/')
+    mecab_w_type = MeCab.Tagger('-O word -r /dev/null -d /usr/lib/x86_64-linux-gnu/mecab/dic/tdmelodic/')
     is_prev = False
     word_info_list_prev = []
     yomis_prev = ''
@@ -198,21 +199,21 @@ def fix_dict(texts, filepath, startindex):
                 if is_overwrite:
                     # prev_word = mecab_context.parse(text)
                     # prev_word = prev_word.split('\n')[nums[0]]
-
-                    context_id_extract = word_info_list[nums[0]][3]
+                    w_types_list = mecab_w_type.parse(text).split('\n')[:-1]
+                    w_types = w_types_list[nums[0]].split(',')[:6]
+                    context_id_new = word_info_list[nums[0]][3]
                     cost_fixed = int(cost_extract) - 1
                 else:
-                    w_types = select_word_types(input_to_han(word_type_stdout))
-                    context_id_prev = word_infolist[nums[0]-1][3] if nums[0] is not 0 else 0
+                    w_types, context_id_new = select_word_types(input_to_han(word_type_stdout))
+                    context_id_prev = word_info_list[nums[0]-1][3] if nums[0] is not 0 else 0
                     artic_cost_prev = calc_articulation_cost(word_info_list[nums[0]][3], context_id_prev)
-                    artic_cost = calc_articulation_cost(w_types[3], context_id_prev)
+                    artic_cost = calc_articulation_cost(context_id_new, context_id_prev)
                     cost_fixed = artic_cost_prev + int(cost_extract) - (artic_cost + 1)
-                fixed_info.append(cost_fixed)
-                fixed_info.extend(w_types)
+                fixed_info.extend([cost_fixed, context_id_new])
 
                 do_regist = check_yes_no('regist this yomi?:')
                 if do_regist:
-                    regist_info = create_regist_info(fixed_info)
+                    regist_info = create_regist_info(fixed_info, w_types)
                 else:
                     print(f"\n{yomis}\n{wakati}")
                     continue
