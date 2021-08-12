@@ -10,6 +10,7 @@ import re
 from tqdm import tqdm
 import jaconv
 import pandas as pd
+from regist_verbs import verb_types
 
 current_idx = 0
 fixed_list = []
@@ -18,9 +19,16 @@ word_type_list = [
     [['名詞','固有名詞','一般','*','*','*'],4786],
     [['名詞','固有名詞','人名','*','*','*'],4788],
     [['名詞','固有名詞','地名','*','*','*'],4792],
-    [['動詞'],0]
+    ['動詞',0]
 ]
 matrix = pd.read_csv('./matrix.csv', names=['prev','target','cost'])
+
+def calc_cost(cid_prev, cid_old, cid_new, c_extract):
+    artic_cost_prev = calc_articulation_cost(cid_old, cid_prev)
+    artic_cost = calc_articulation_cost(cid_new, cid_prev)
+    cost_fixed = artic_cost_prev + int(c_extract) - (artic_cost + 1)
+
+    return cost_fixed
 
 def calc_articulation_cost(c_id, c_id_prev):
     c_id = int(c_id)
@@ -34,8 +42,6 @@ def select_word_types(idx):
     if idx > len(word_type_list):
         print('this number cant\'t using')
         select_word_types(input_to_han(word_type_stdout))
-    elif (word_type_list[idx][0][0] == '動詞'):
-        print('create doushi')
     else:
         return word_type_list[idx]
 
@@ -48,9 +54,9 @@ def check_yes_no(sentence):
 
 def yomi_fix(yomi, word):
     yomi_in = input(f"{word}: {''.join(yomi)}->")
-    re_hiragana = re.compile(r'^[あ-んー]+$')
+    re_hiragana = re.compile(r'^[ぁ-んー]+$')
     if re_hiragana.fullmatch(yomi_in):
-            return [yomi_in, word]
+            return [jaconv.hira2kata(yomi_in), word]
     elif yomi_in == '':
         return
     else:
@@ -134,6 +140,7 @@ def create_regist_info(word_info, w_types):
     ]
 
 def fix_dict(texts, filepath, startindex):
+    v_types = verb_types()
     mecab_yomi = MeCab.Tagger('-O yomi -r /dev/null -d /usr/lib/x86_64-linux-gnu/mecab/dic/tdmelodic/')
     mecab_wakati = MeCab.Tagger('-O wakati -r /dev/null -d /usr/lib/x86_64-linux-gnu/mecab/dic/tdmelodic/')
     mecab_w_type = MeCab.Tagger('-O word -r /dev/null -d /usr/lib/x86_64-linux-gnu/mecab/dic/tdmelodic/')
@@ -206,9 +213,25 @@ def fix_dict(texts, filepath, startindex):
                 else:
                     w_types, context_id_new = select_word_types(input_to_han(word_type_stdout))
                     context_id_prev = word_info_list[nums[0]-1][3] if nums[0] is not 0 else 0
-                    artic_cost_prev = calc_articulation_cost(word_info_list[nums[0]][3], context_id_prev)
-                    artic_cost = calc_articulation_cost(context_id_new, context_id_prev)
-                    cost_fixed = artic_cost_prev + int(cost_extract) - (artic_cost + 1)
+                    context_id_old = word_info_list[nums[0]][3]
+                    if w_types == '動詞':
+                        all_verbs = v_types.all_types(fixed_info[0], fixed_info[1])
+                        do_regist = check_yes_no('regist this yomi?:')
+                        if do_regist:
+                            for idx, verb in enumerate(all_verbs):
+                                all_verbs[idx][3] = calc_cost(
+                                    context_id_prev,
+                                    context_id_old,
+                                    verb[1],
+                                    cost_extract
+                                )
+                            fixed_list.extend(all_verbs)
+                        else:
+                            print(f"\n{yomis}\n{wakati}")
+                        continue
+
+                    cost_fixed = calc_cost(
+                        context_id_prev , context_id_old, context_id_new, cost_extract)
                 fixed_info.extend([cost_fixed, context_id_new])
 
                 do_regist = check_yes_no('regist this yomi?:')
