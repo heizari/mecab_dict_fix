@@ -9,6 +9,9 @@ add these
 node-format-yomi = %m\t%f[1]\t%f[11]\t%f[17]\t%c\t%phl\n
 unk-format-yomi  = %m\t?\t?\t?\t2\t1\n
 eos-format-yomi  = EOS\tEOS\t\t
+node-format-word = %H\n
+unk-format-word  = %m\t%m\t%m\t%m\t%F-[0,1,2,3]\t%f[4]\t%f[5]\t?\n
+eos-format-word  = EOS\tEOS\t\t
 ```
 example  
 ```
